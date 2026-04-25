@@ -1,12 +1,13 @@
 // search_tree.rs
 
+//! This module handles inverse cubic interpolation (finding all xs corresponding to a given value of y). Since in general case, there might be multiple values, the standard bincode which works for monotonous functions, will not work. Instread, a search tree is constructed which map monotonous regions of y->x mapping and root search happens in the tree subdivisions.
+
 use std::fmt::{Debug};
 use std::collections::{HashMap,BTreeSet};
 use std::hash::{Hash};
 use std::borrow::{Borrow};
 
 use num::{Float};
-//use nalgebra::{Scalar, SMatrix};
 
 use crate::{MPPData, binary_search_interval};
 
@@ -20,7 +21,6 @@ where T: Float + Debug,
 {
 	interval: [usize;2],
 	children: [usize;2],
-	//links: [usize;2],
 	parent: usize,
 	minmaxs: Vec<[T;2]>,
 }
@@ -61,13 +61,6 @@ impl<T: Float + Debug> SearchNode<T>{
 	
 }
 
-/*
-impl<T> Default for SearchNode<T>
-where T: Float,
-{
-	return 
-}
-*/
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 
@@ -135,40 +128,7 @@ where T: Float + Debug, K : Eq + Hash,
 		}
 		return res;
 	}
-	/*
-	pub fn search_extrema_linear(&self)->Vec<(usize,usize)>{ // index, variable #
-		let mut minmaxs = self.nodes[1].minmaxs.clone();
-		let mut indices : Vec<usize> = vec![0usize;self.nodes[1].minmaxs.len()];
-		let mut setprev : Vec<bool>  = vec![false;self.nodes[1].minmaxs.len()];
-		let mut res : Vec<(usize,usize)> = Vec::new();
-		println!("minmaxs = {:?}", &minmaxs);
-		for k in 0..self.pps.len(){
-			for m in 0..indices.len(){
-			//for m in 0..1{
-				let brk = self.pps.get_break_for_index_by_idx(m, k).unwrap();
-				println!("k = {:?}, brk = {:?} at var {:?}", &k, &brk, &m);
-				if brk < minmaxs[m][0] {
-					println!("k = {:?}, CASE MIN at var {:?}", &k, &m);
-					indices[m] = k;
-					minmaxs[m][0] = brk;
-					setprev[m] = true;
-				} else if brk > minmaxs[m][1]{
-					println!("k = {:?}, CASE MAX at var {:?}", &k, &m);
-					indices[m] = k;
-					minmaxs[m][1] = brk;
-					setprev[m] = true;
-				} else {
-					if indices[m] > 0 && setprev[m]{
-						println!("k = {:?}, CASE PUSH at var {:?}", &k, &m);
-						res.push((k-1,m));
-					}
-					setprev[m] = false;
-				}
-			}
-		}
-		return res;
-	}
-	*/
+
 	pub fn split_node_at(&mut self, nindex: usize, new_index: usize)->Option<(usize,usize)>{
 		if new_index <= self.nodes[nindex].interval[0] || new_index >= self.nodes[nindex].interval[1] {return None;}
 		if self.nodes[nindex].children[0] > 0 {
@@ -191,17 +151,6 @@ where T: Float + Debug, K : Eq + Hash,
 		self.nodes[idx_left].parent = nindex;
 		self.nodes[idx_right].parent = nindex;
 		for m in 0..self.nodes[nindex].minmaxs.len(){
-			/*
-			let brk = self.pps.get_break_for_index_by_idx(m, new_index).unwrap();
-			if brk < self.nodes[idx_left].minmaxs[m][0]{
-				self.nodes[idx_left].minmaxs[m][0] = brk;
-				self.nodes[idx_right].minmaxs[m][0] = brk;
-			}
-			if brk > self.nodes[idx_left].minmaxs[m][1]{
-				self.nodes[idx_left].minmaxs[m][1] = brk;
-				self.nodes[idx_right].minmaxs[m][1] = brk;
-			}
-			*/
 			let interval_left  = self.nodes[nindex].interval[0];
 			let interval_right = self.nodes[nindex].interval[1];
 			let value_left  = self.pps.get_break_for_index_by_idx(m, interval_left).unwrap();

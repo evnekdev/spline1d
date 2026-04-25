@@ -1,12 +1,13 @@
 // binsearch.rs (splines library)
 
+//! binary search algorithm to find the interval containing a search value; assumes monotonicity
+
 use num::{Float};
 
 use crate::{_interval_inside};
 
 /************************************************************************************************************/
 
-/// binary search algorithm to find the interval containing a search value
 /// For simplicity, does not accept NaNs or Inf values
 /// Assumes the data are monotonous with the index
 pub fn binary_search_interval<T: Float>(size: usize, sval: &T, locator: impl Fn(usize)->T)->Option<usize>{
@@ -38,6 +39,7 @@ fn _check_float<T: Float>(val: &T)->bool{
 
 /************************************************************************************************************/
 
+/// TODO
 pub fn binary_search_interval_nd<T: Float, const N: usize>(sizes: &[usize;N], svals: &[T;N], locator: impl Fn(&[usize;N])->[T;N])->Option<[usize;N]>{
 	if _check_floats(svals){return None;}
 	

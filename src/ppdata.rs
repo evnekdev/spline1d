@@ -1,5 +1,7 @@
 // ppdata.rs (splines library)
 
+//! The main structure in this module, PPData, encapsulates the calculated cubic spline coefficients and automatically handles interval location and interpolation using the appropriate set of cubic coefficients.
+
 use std::fmt;
 use std::collections::{HashMap};
 use std::hash::{Hash};
@@ -22,6 +24,7 @@ use crate::solve::{calculate_root};
 
 /********************************************************************************************************************/
 /// One-dimensional Piecewise-Polynomial
+/// TODO make a zero-copy type where xx and yy are borrowed instead of cloning
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct PPData<T: Float + fmt::Debug>{
 	pub breaks_x: Vec<T>,
@@ -29,14 +32,7 @@ pub struct PPData<T: Float + fmt::Debug>{
 	pub coeffs: Vec<[T;4]>,
 	last: usize,
 }
-/*
-impl<T: Float + fmt::Debug> fmt::Debug for PPData<T>{
-	fn fmt(&self, f: &mut fmt::Formatter)->fmt::Result {
-		write!(f, "{:?}", &self.breaks_x);
-		return Ok(());
-	}
-}
-*/
+
 impl<T: Float + fmt::Debug> num::Zero for PPData<T>{
 	
 	fn zero() -> Self {
@@ -93,9 +89,13 @@ impl<T: Float + fmt::Debug> PPData<T> {
 			last: 0,
 		};
 	}
-	
+	/// Initializes a new instance using the makima method
 	pub fn new_makima(xx: &[T], yy: &[T])->Self {
 		return makima(xx, yy);
+	}
+	
+	pub fn new_pchip(xx: &[T], yy: &[T])->Self {
+		return pchip(xx, yy);
 	}
 	
 	/// returns the index of the interval containing value x
@@ -218,7 +218,7 @@ impl PPData<f64>{
 
 /********************************************************************************************************************/
 
-/// Multiple variables 1 degree of freedom interpolator
+/// Multiple variables 1 degree of freedom interpolator. In some applications, instead of xx and yy pair, one might have multiple 1D variables xx, yy, zz, uu, vv, etc. If you select a principal variable tt, instead of constructing all possible pairs of variables, one can make only 2n-2 pairs (tt, xx), (xx, tt) to handle all possible cubic splines between the variables.
 #[derive(Debug)]
 pub struct MPPData<K,T>
 where T: Float + fmt::Debug,

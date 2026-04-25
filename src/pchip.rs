@@ -1,5 +1,7 @@
 // pchip.rs (splines library)
 
+//! Pchip interpolation method (TODO)
+
 use num::{Float};
 
 use crate::ppdata::{PPData};
@@ -32,9 +34,12 @@ for r = 1:m
 end
 */
 
+/// TODO
 pub fn slopes_pchip<T: Float>(xx: &[T], yy: &[T], delta: &[T])->Vec<T>{
 	todo!();
 }
+
+// Matlab code
 
 /*
 function d = pchipSlopes(x,y,del)

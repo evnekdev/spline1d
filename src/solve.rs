@@ -1,3 +1,4 @@
+//! Finding the cubic root (y = 0 intersection) analytically.
 
 fn powf_(x: f64, pow: f64)->f64{
 	let absroot = x.abs().powf(pow);
@@ -8,6 +9,7 @@ fn powf_(x: f64, pow: f64)->f64{
 	return absroot;
 }
 
+/// Calculate a cubic root to find x intersection of a cubic spline
 pub fn calculate_root(coeffs: &[f64])->f64{
 	let a = coeffs[0];
 	let b = coeffs[1];
