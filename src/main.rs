@@ -2,7 +2,7 @@
 
 use std::mem::{size_of_val};
 
-use splines::{binary_search_interval, PPData, makima, load_mpp_from_csv, SearchTree};
+use spline1d::{binary_search_interval, PPData, makima, load_mpp_from_csv, SearchTree};
 
 pub fn main(){
 	/*
