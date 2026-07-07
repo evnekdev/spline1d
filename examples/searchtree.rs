@@ -1,10 +1,10 @@
 // searchtree.rs
 use std::mem::{size_of_val};
-use spline1d::{binary_search_interval, PPData, makima, load_mpp_from_csv, SearchTree};
+use spline1d::*;
 
 pub fn main(){
 	let datafile = r"c:\_WORK\Code\Rust\workspace\spline1d\data\poly.csv";
-	let mpp = load_mpp_from_csv(datafile).unwrap();
+	let mpp = load_multispline_from_csv(datafile).unwrap();
 	let mut tree = SearchTree::new(&mpp);
 	let extrema = tree.search_extrema_linear();
 	for k in 0..extrema.len(){

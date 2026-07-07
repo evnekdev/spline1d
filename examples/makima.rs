@@ -1,6 +1,6 @@
 // makima.rs
 use std::mem::{size_of_val};
-use spline1d::{binary_search_interval, PPData, makima, load_mpp_from_csv, SearchTree};
+use spline1d::*;
 
 pub fn main(){
 	let xx = vec![0.0, 0.2, 0.4, 0.55, 0.65];
