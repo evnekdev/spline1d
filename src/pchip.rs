@@ -4,14 +4,14 @@
 
 use num::{Float};
 
-use crate::ppdata::{PPData};
+use crate::spline::{Spline};
 use crate::{diff};
 
-pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->PPData<T>{
+pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
 	let hh : Vec<T> = diff(xx).collect();
 	let delta : Vec<T> = diff(yy).zip(hh.iter()).map(|(dy,dx)| dy/ *dx).collect();
 	let ss = slopes_pchip(xx, yy, &delta);
-	return PPData::new(xx, yy, &ss);
+	return Spline::new(xx, yy, &ss);
 }
 
 /*

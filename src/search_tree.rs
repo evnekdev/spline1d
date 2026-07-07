@@ -9,7 +9,8 @@ use std::borrow::{Borrow};
 
 use num::{Float};
 
-use crate::{MPPData, binary_search_interval};
+use crate::multispline::MultiSpline;
+use crate::binary_search_interval;
 
 /*************************************************************************************************************/
 /*************************************************************************************************************/
@@ -27,7 +28,7 @@ where T: Float + Debug,
 
 impl<T: Float + Debug> SearchNode<T>{
 	
-	pub fn root<K: Eq + Hash>(pps: &MPPData<K,T>) -> Self {
+	pub fn root<K: Eq + Hash>(pps: &MultiSpline<K,T>) -> Self {
 		let first : usize = 0;
 		let last  : usize = pps.len()-1;
 		let mut minmaxs : Vec<[T;2]> = Vec::new();
@@ -45,7 +46,7 @@ impl<T: Float + Debug> SearchNode<T>{
 		};
 	}
 	
-	pub fn null<K: Eq + Hash>(pps: &MPPData<K,T>) -> Self {
+	pub fn null<K: Eq + Hash>(pps: &MultiSpline<K,T>) -> Self {
 		let mut minmaxs : Vec<[T;2]> = Vec::new();
 		for k in 0..pps.number_variables(){
 			minmaxs.push([T::zero();2]);
@@ -69,13 +70,13 @@ pub struct SearchTree<'a, K, T>
 where T: Float + Debug, K : Eq + Hash,
 {
 	pub nodes: Vec<SearchNode<T>>,
-	pub pps: &'a MPPData<K,T>,
+	pub pps: &'a MultiSpline<K,T>,
 }
 
 impl<'a, K,T> SearchTree<'a, K,T>
 where T: Float + Debug, K : Eq + Hash,
 {
-	pub fn new(pps: &'a MPPData<K,T>)->Self {
+	pub fn new(pps: &'a MultiSpline<K,T>)->Self {
 		let mut tree = Self {
 			nodes: vec![SearchNode::null(&pps),SearchNode::root(&pps)],
 			pps: pps,
@@ -98,15 +99,15 @@ where T: Float + Debug, K : Eq + Hash,
 			for m in 0..indices.len(){
 			//for m in 0..1{
 				let brk = self.pps.get_break_for_index_by_idx(m, k).unwrap();
-				println!("k = {:?}, brk = {:?} at var {:?}", &k, &brk, &m);
+				//println!("k = {:?}, brk = {:?} at var {:?}", &k, &brk, &m);
 				if k == 0 {
 					previous[m] = brk;
 					continue;
 				}
 				if brk < previous[m] {
-					println!("k = {:?}, CASE LOWER at var {:?}", &k, &m);
+					//println!("k = {:?}, CASE LOWER at var {:?}", &k, &m);
 					if k >= 2 && increasing[m] {
-						println!("k = {:?}, CASE PUSH at var {:?}", &k, &m);
+						//println!("k = {:?}, CASE PUSH at var {:?}", &k, &m);
 						res.push((k-1,m));
 					}
 					indices[m] = k;

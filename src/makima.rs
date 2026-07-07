@@ -4,13 +4,13 @@
 
 use num::{Float};
 
-use crate::ppdata::{PPData};
+use crate::spline::{Spline};
 use crate::{diff, kernel_conv};
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container
-pub fn makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->PPData<T>{
+pub fn makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
 	let ss = slopes_makima(xx, yy);
-	return PPData::new(xx, yy, &ss);
+	return Spline::new(xx, yy, &ss);
 }
 
 /// Estimation of the tangent lines at xx points using the makima method

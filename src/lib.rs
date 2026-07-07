@@ -4,11 +4,13 @@
 //!
 //! The root contains some common utility functions used elsewhere
 
-pub mod solve;
+
 pub mod pchip;
 pub mod makima;
-pub mod ppdata;
 pub mod binsearch;
+pub mod spline;
+pub mod multispline;
+pub mod solve;
 pub mod search_tree;
 
 use num::{Float};
@@ -16,7 +18,8 @@ use num::{Float};
 pub use crate::makima::{makima};
 pub use crate::pchip::{pchip};
 pub use crate::binsearch::{binary_search_interval};
-pub use crate::ppdata::{PPData, MPPData, load_mpp_from_csv};
+pub use crate::spline::{Spline};
+pub use crate::multispline::{MultiSpline, load_mpp_from_csv};
 pub use crate::search_tree::{SearchNode,SearchTree};
 
 /// Iterate over val(k)-val(k-1) difference values in an iterator
