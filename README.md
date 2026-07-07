@@ -1,4 +1,4 @@
-# Splines
+# Spline1d
 
 > A pure Rust library for 1D cubic spline interpolation, featuring Makima interpolation and tools for evaluation, root finding, and inverse lookup.
 
@@ -10,7 +10,7 @@
 
 ## 📌 Overview
 
-Splines is a Rust crate for constructing and evaluating cubic spline interpolations.
+Spline1d is a Rust crate for constructing and evaluating cubic spline interpolations.
 
 ### Current capabilities:
 - Makima interpolation (fully implemented)
@@ -44,7 +44,7 @@ Splines is a Rust crate for constructing and evaluating cubic spline interpolati
 
 ## 🚀 Getting Started
 
-git clone https://github.com/evnekdev/splines.git
+git clone https://github.com/evnekdev/spline1d.git
 
 cd splines
 
