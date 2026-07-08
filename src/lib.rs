@@ -5,6 +5,7 @@
 //! The root contains some common utility functions used elsewhere
 
 
+pub mod alpha;
 pub mod pchip;
 pub mod makima;
 pub mod binsearch;
@@ -15,8 +16,9 @@ pub mod searchtree;
 
 use num::{Float};
 
-pub use crate::makima::{makima, makima_single_left, makima_single_middle, makima_single_right};
-pub use crate::pchip::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right};
+pub use crate::makima::{makima, makima_single_left, makima_single_middle, makima_single_right, makima_single_left_alpha, makima_single_middle_alpha, makima_single_right_alpha};
+pub use crate::pchip::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right, pchip_single_left_alpha, pchip_single_middle_alpha, pchip_single_right_alpha};
+pub use crate::alpha::{cubic_coeffs_to_alpha, cubic_coeffs_to_alpha_unit, alpha_to_cubic_coeffs, alpha_to_standard_cubic_coeffs};
 pub use crate::binsearch::{binary_search_interval};
 pub use crate::spline::{Spline};
 pub use crate::multispline::{MultiSpline, load_multispline_from_csv};

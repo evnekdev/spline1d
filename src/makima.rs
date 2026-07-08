@@ -6,6 +6,7 @@ use num::{Float};
 
 use crate::spline::{Spline};
 use crate::binsearch::{diff, kernel_conv};
+use crate::alpha::cubic_coeffs_to_alpha;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container
 pub fn makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
@@ -101,6 +102,36 @@ pub fn makima_single_right<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T) -
     let s2 = makima_slope(d01, d12, d23, d34);
 
     return cubic_coeffs(x1, y1, x2, y2, s1, s2);
+}
+
+/// Normalized `[alpha0, alpha1]` coefficients for a single left Makima interval `[x1, x2]`.
+///
+/// The returned coefficients are for
+/// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
+/// where `t = (x - x1) / (x2 - x1)`.
+pub fn makima_single_left_alpha<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+    let coeffs = makima_single_left(x1, y1, x2, y2, x3, y3);
+    return cubic_coeffs_to_alpha(coeffs, x2 - x1);
+}
+
+/// Normalized `[alpha0, alpha1]` coefficients for a single middle Makima interval `[x1, x2]`.
+///
+/// The returned coefficients are for
+/// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
+/// where `t = (x - x1) / (x2 - x1)`.
+pub fn makima_single_middle_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+    let coeffs = makima_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);
+    return cubic_coeffs_to_alpha(coeffs, x2 - x1);
+}
+
+/// Normalized `[alpha0, alpha1]` coefficients for a single right Makima interval `[x1, x2]`.
+///
+/// The returned coefficients are for
+/// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
+/// where `t = (x - x1) / (x2 - x1)`.
+pub fn makima_single_right_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T) -> [T; 2] {
+    let coeffs = makima_single_right(x0, y0, x1, y1, x2, y2);
+    return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }
 
 #[inline]
