@@ -6,9 +6,7 @@
 
 
 pub mod alpha;
-pub mod pchip;
-pub mod makima;
-pub mod steffen;
+pub mod methods;
 pub mod binsearch;
 pub mod spline;
 pub mod multispline;
@@ -17,9 +15,9 @@ pub mod searchtree;
 
 use num::{Float};
 
-pub use crate::makima::{makima, makima_single_left, makima_single_middle, makima_single_right, makima_single_left_alpha, makima_single_middle_alpha, makima_single_right_alpha};
-pub use crate::pchip::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right, pchip_single_left_alpha, pchip_single_middle_alpha, pchip_single_right_alpha};
-pub use crate::steffen::{steffen, slopes_steffen, steffen_single_left, steffen_single_middle, steffen_single_right, steffen_single_left_alpha, steffen_single_middle_alpha, steffen_single_right_alpha};
+pub use crate::methods::{makima, makima_single_left, makima_single_middle, makima_single_right, makima_single_left_alpha, makima_single_middle_alpha, makima_single_right_alpha};
+pub use crate::methods::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right, pchip_single_left_alpha, pchip_single_middle_alpha, pchip_single_right_alpha};
+pub use crate::methods::{steffen, slopes_steffen, steffen_single_left, steffen_single_middle, steffen_single_right, steffen_single_left_alpha, steffen_single_middle_alpha, steffen_single_right_alpha};
 pub use crate::alpha::{cubic_coeffs_to_alpha, cubic_coeffs_to_alpha_unit, alpha_to_cubic_coeffs, alpha_to_standard_cubic_coeffs};
 pub use crate::binsearch::{binary_search_interval};
 pub use crate::spline::{Spline};
