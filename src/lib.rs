@@ -1,9 +1,15 @@
 // lib.rs (splines library)
 
-//! This crate performs cubic spline interpolation in pure Rust (1-D curves); currently, three methods of cubic interpolation are available: makima, pchip, and steffen. The original publications of the cubic interpolation methods are located in the project folder; the working formulas for makima are copied after the Matlab in-built methods.
+//! This crate performs cubic spline interpolation in pure Rust (1-D curves).
+//! Currently, three methods of cubic interpolation are available: `makima`, `pchip`, and `steffen`.
+//! The original publications of the cubic interpolation methods are located in the project folder; the working formulas for makima and pchip are copied after the Matlab in-built methods.
+//! 
+//! Cubic interpolation is available in two flavors: single-interval functions calculating cubic coefficients directly (4-values) or producing a structure with interval breaks alongside with cubic coefficients used to lookup the containing interpolation intervals for `xs`.
+//! Single-interval functions can produce either cubic coefficients (4-values) or normalized endpoints coefficients (alpha coefficients, 2-values).
+//! 
+//! An advanced multivariable 1D interpolation is available; interpolation structures for n variables x1, x2, ..., xn running along x0 can be calculated simultaneously and used to do any pair-wise lookup xi->xj.
 //!
-//! The root contains some common utility functions used elsewhere
-
+//! In case of non-monotonous variables, a reverse interpolation search exists: a `SearchTree` is produced to lookup all x values for a given y.
 
 pub mod alpha;
 pub mod methods;

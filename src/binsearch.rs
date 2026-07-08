@@ -1,6 +1,5 @@
 // binsearch.rs (splines library)
-
-//! binary search algorithm to find the interval containing a search value; assumes monotonicity
+//! binary search algorithm to find the interval containing a search value; assumes monotonicity.
 
 use num::{Float};
 
@@ -8,7 +7,12 @@ use num::{Float};
 /*****************************************************************************************************************************************************************************/
 
 /// For simplicity, does not accept NaNs or Inf values
-/// Assumes the data are monotonous with the index
+/// Assumes the data are monotonous with the index.
+/// | Argument | value |
+/// |---|---|
+/// | size | the number of intervals (nmax) |
+/// | sval | search value |
+/// | locator | a function returning  break values for a given index |
 pub fn binary_search_interval<T: Float>(size: usize, sval: &T, locator: impl Fn(usize)->T)->Option<usize>{
 	if _check_float(sval) {return None;}
 	let mut n0 = 0;
@@ -39,13 +43,7 @@ fn _check_float<T: Float>(val: &T)->bool{
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/
 
-/// TODO
-pub fn binary_search_interval_nd<T: Float, const N: usize>(sizes: &[usize;N], svals: &[T;N], locator: impl Fn(&[usize;N])->[T;N])->Option<[usize;N]>{
-	if _check_floats(svals){return None;}
-	
-	todo!();
-}
-
+/// Returns `true` if a float value is neither NAN or INF.
 fn _check_floats<T: Float, const N: usize>(vals: &[T;N])->bool{
 	for val in vals.iter(){
 		if val.is_nan() || val.is_infinite(){return true;}
@@ -56,21 +54,21 @@ fn _check_floats<T: Float, const N: usize>(vals: &[T;N])->bool{
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/
 
-/// Iterate over val(k)-val(k-1) difference values in an iterator
+/// Iterate over val(k)-val(k-1) difference values in an iterator.
 pub fn diff<T: Float>(slc: &[T])->impl Iterator<Item=T> + '_{
 	return slc.windows(2).map(|w| w[1]-w[0]);
 }
 
-/// for a kernel (an array of fixed coefficients), a sum of products val(k)*coeff(k) + val(k-1)*coeff(k-1) + ... is calculated as an iterator over k. A lot of calculations using numerical methods can be formulated as a kernel transformation
+/// for a kernel (an array of fixed coefficients), a sum of products val(k)*coeff(k) + val(k-1)*coeff(k-1) + ... is calculated as an iterator over k. A lot of calculations using numerical methods can be formulated as a kernel transformation.
 pub fn kernel_conv<'a, T: Float>(slc: &'a [T], kernel: &'a [T])->impl Iterator<Item=T> +'a {
 	return slc.windows(kernel.len()).map(|w| _kernel_mult(w, kernel));
 }
 
-
+/// Apply kernel moving multiplication (folding).
 fn _kernel_mult<T: Float>(window: &[T], kernel: &[T])->T{
 	return window.iter().zip(kernel.iter()).map(|(w,k)| *w**k).fold(T::zero(), |acc, num| acc + num);
 }
-/// check if a value is inside the interval
+/// Check if a value is inside the interval.
 pub fn interval_inside<T: Float>(val: &T, vals: (&T,&T))->bool{
 	if val == vals.0 || val == vals.1 {return true;}
 	let b1 = val > vals.0;
@@ -78,7 +76,7 @@ pub fn interval_inside<T: Float>(val: &T, vals: (&T,&T))->bool{
 	return (vals.1 > vals.0 && b1 && !b2) || (vals.0 > vals.1 && b2 && !b1);
 }
 
-/// Locate a value inside a slice
+/// A simple implementation of a locator : locate a value inside a slice.
 pub fn slice_locator<T: Float>(slc: &[T], loc: usize)->T {
 	return slc[loc];
 }

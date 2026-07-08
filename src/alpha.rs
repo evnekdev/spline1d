@@ -1,6 +1,6 @@
 // alpha.rs (splines library)
 
-//! Conversion utilities for the normalized endpoint form
+//! Conversion utilities for the normalized endpoint form.
 //!
 //! `y(t) = y1 * (1 - t) + y2 * t + (1 - t) * t * (alpha0 + alpha1 * t)`,
 //! where `t = (x - x1) / (x2 - x1)`.

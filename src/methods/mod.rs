@@ -1,4 +1,7 @@
 // spline1d::methods::mod.rs
+//! All methods of calculating cubic coefficients are grouped here.
+//! 
+//! Currently, the following methods are implemented : `makima`, `pchip`, and `steffen`. There are more methods out there in the literature but some of them are not local, and some are older variants of the implemented methods.
 
 pub mod makima;
 pub mod pchip;
