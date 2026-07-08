@@ -15,8 +15,8 @@ pub mod searchtree;
 
 use num::{Float};
 
-pub use crate::makima::{makima};
-pub use crate::pchip::{pchip};
+pub use crate::makima::{makima, makima_single_left, makima_single_middle, makima_single_right};
+pub use crate::pchip::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right};
 pub use crate::binsearch::{binary_search_interval};
 pub use crate::spline::{Spline};
 pub use crate::multispline::{MultiSpline, load_multispline_from_csv};
