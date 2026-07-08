@@ -78,7 +78,7 @@ where T: Float + Debug, K : Eq + Hash,
 {
 	pub fn new(pps: &'a MultiSpline<K,T>)->Self {
 		let mut tree = Self {
-			nodes: vec![SearchNode::null(&pps),SearchNode::root(&pps)],
+			nodes: vec![SearchNode::null(pps), SearchNode::root(pps)],
 			pps: pps,
 		};
 		let extrema = tree.search_extrema_linear();
@@ -225,11 +225,11 @@ where T: Float + Debug, K : Eq + Hash,
 	}
 	
 	fn binary_search_monotonic_by_idx(&self, idx: usize, x: &T, index0: usize, index1: usize)->Option<usize>{
-		return binary_search_interval(index1-index0, x, |ix| self.pps.pps[idx].0.breaks_x[ix+index0]).map(|idx| idx + index0);
+		return binary_search_interval(index1 - index0 + 1, x, |ix| self.pps.pps[idx].0.breaks_x[ix + index0]).map(|idx| idx + index0);
 	}
 	
 	fn binary_search_monotonic_principal(&self, x: &T, index0: usize, index1: usize)->Option<usize>{
-		return binary_search_interval(index1-index0, x, |ix| self.pps.tt[ix]);
+		return binary_search_interval(index1 - index0 + 1, x, |ix| self.pps.tt[ix + index0]).map(|idx| idx + index0);
 	}
 	
 	pub fn interpolate<Q: ?Sized>(&self, keyx: &Q, keyy: &Q, x: &T)->Vec<T>

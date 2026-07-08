@@ -1,17 +1,18 @@
 // pchip.rs (splines library)
 
-//! Pchip interpolation method (TODO)
+//! PCHIP interpolation method (translated from Matlab's `pchipSlopes`).
 
-use num::{Float};
+use num::Float;
 
-use crate::spline::{Spline};
-use crate::{diff};
+use crate::binsearch::diff;
+use crate::spline::Spline;
 
-pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
-	let hh : Vec<T> = diff(xx).collect();
-	let delta : Vec<T> = diff(yy).zip(hh.iter()).map(|(dy,dx)| dy/ *dx).collect();
-	let ss = slopes_pchip(xx, yy, &delta);
-	return Spline::new(xx, yy, &ss);
+/// This function accepts x-values and y-values arrays and returns a spline interpolation container.
+pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+    let hh: Vec<T> = diff(xx).collect();
+    let delta: Vec<T> = diff(yy).zip(hh.iter()).map(|(dy, dx)| dy / *dx).collect();
+    let ss = slopes_pchip(xx, yy, &delta);
+    return Spline::new(xx, yy, &ss);
 }
 
 /*
@@ -34,9 +35,70 @@ for r = 1:m
 end
 */
 
-/// TODO
-pub fn slopes_pchip<T: Float>(xx: &[T], yy: &[T], delta: &[T])->Vec<T>{
-	todo!();
+/// Estimation of the tangent lines at `xx` points using the PCHIP method.
+///
+/// This is a direct real-valued translation of Matlab's internal `pchipSlopes`
+/// routine. For a monotone sequence, the slopes are shape-preserving: interior
+/// slopes are zero when adjacent secant slopes change sign, and otherwise use
+/// the weighted harmonic mean formula.
+pub fn slopes_pchip<T: Float>(xx: &[T], _yy: &[T], delta: &[T]) -> Vec<T> {
+    let n = xx.len();
+
+    assert!(n >= 2, "pchip requires at least two points");
+    assert!(delta.len() == n - 1, "delta must have length xx.len() - 1");
+
+    // Special case n = 2, use linear interpolation.
+    if n == 2 {
+        return vec![delta[0]; n];
+    }
+
+    let zero = T::zero();
+    let one = T::one();
+    let two = one + one;
+    let three = two + one;
+
+    let h: Vec<T> = diff(xx).collect();
+    let mut d = vec![zero; n];
+
+    // Slopes at interior points.
+    // d(k) = weighted average of delta(k-1) and delta(k) when they have the
+    // same sign; d(k) = 0 when they have opposite signs or either is zero.
+    for i in 0..(n - 2) {
+        let del1 = delta[i];
+        let del2 = delta[i + 1];
+
+        if del1 * del2 > zero {
+            let hs = h[i] + h[i + 1];
+            let w1 = (h[i] + hs) / (three * hs);
+            let w2 = (hs + h[i + 1]) / (three * hs);
+
+            let abs1 = del1.abs();
+            let abs2 = del2.abs();
+            let dmax = if abs1 > abs2 { abs1 } else { abs2 };
+            let dmin = if abs1 < abs2 { abs1 } else { abs2 };
+
+            d[i + 1] = dmin / (w1 * (del1 / dmax) + w2 * (del2 / dmax));
+        }
+    }
+
+    // Slopes at end points.
+    // Set d(1) and d(n) via non-centered, shape-preserving three-point formulae.
+    d[0] = ((two * h[0] + h[1]) * delta[0] - h[0] * delta[1]) / (h[0] + h[1]);
+    if d[0] * delta[0] <= zero {
+        d[0] = zero;
+    } else if delta[0] * delta[1] < zero && d[0].abs() > (three * delta[0]).abs() {
+        d[0] = three * delta[0];
+    }
+
+    d[n - 1] = ((two * h[n - 2] + h[n - 3]) * delta[n - 2] - h[n - 2] * delta[n - 3])
+        / (h[n - 2] + h[n - 3]);
+    if d[n - 1] * delta[n - 2] <= zero {
+        d[n - 1] = zero;
+    } else if delta[n - 2] * delta[n - 3] < zero && d[n - 1].abs() > (three * delta[n - 2]).abs() {
+        d[n - 1] = three * delta[n - 2];
+    }
+
+    return d;
 }
 
 // Matlab code

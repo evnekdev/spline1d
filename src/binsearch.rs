@@ -16,12 +16,12 @@ pub fn binary_search_interval<T: Float>(size: usize, sval: &T, locator: impl Fn(
 	let mut v0 = locator(n0);
 	let mut v1 = locator(n1);
 	if _check_float(&v0) || _check_float(&v1){return None;}
-	if !_interval_inside(sval, (&v0, &v1)){return None;}
+	if !interval_inside(sval, (&v0, &v1)){return None;}
 	while (n1-n0) > 1 {
 		let n = (n0+n1) / 2;
 		let v = locator(n);
 		if _check_float(&v){return None;}
-		if _interval_inside(sval, (&v0,&v)){
+		if interval_inside(sval, (&v0,&v)){
 			n1 = n;
 			v1 = v;
 		} else {
@@ -71,7 +71,7 @@ fn _kernel_mult<T: Float>(window: &[T], kernel: &[T])->T{
 	return window.iter().zip(kernel.iter()).map(|(w,k)| *w**k).fold(T::zero(), |acc, num| acc + num);
 }
 /// check if a value is inside the interval
-fn _interval_inside<T: Float>(val: &T, vals: (&T,&T))->bool{
+pub fn interval_inside<T: Float>(val: &T, vals: (&T,&T))->bool{
 	if val == vals.0 || val == vals.1 {return true;}
 	let b1 = val > vals.0;
 	let b2 = val > vals.1;

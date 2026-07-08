@@ -5,7 +5,7 @@
 use num::{Float};
 
 use crate::spline::{Spline};
-use crate::{diff, kernel_conv};
+use crate::binsearch::{diff, kernel_conv};
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container
 pub fn makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{

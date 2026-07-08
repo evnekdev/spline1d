@@ -12,12 +12,8 @@ use std::error::{Error};
 use core::ops::{Add};
 use num::{Float, Zero};
 use csv::{Reader};
-use serde::{Serialize, Deserialize};
-use bincode::{Encode, Decode};
 
-use crate::{kernel_conv};
-use crate::{_interval_inside};
-use crate::binsearch::{binary_search_interval};
+use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
 use crate::makima::{makima};
 use crate::pchip::{pchip};
 use crate::spline::Spline;

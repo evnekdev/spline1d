@@ -13,27 +13,26 @@ use std::error::{Error};
 use core::ops::{Add};
 use num::{Float, Zero};
 use csv::{Reader};
-use serde::{Serialize, Deserialize};
-use bincode::{Encode, Decode};
+//use serde::{Serialize, Deserialize};
+//use bincode::{Encode, Decode};
 
-use crate::{kernel_conv};
-use crate::{_interval_inside};
-use crate::binsearch::{binary_search_interval};
+use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
 use crate::makima::{makima};
 use crate::pchip::{pchip};
 use crate::solve::{calculate_root};
 
+
 /********************************************************************************************************************/
 /// One-dimensional Piecewise-Polynomial
 /// TODO make a zero-copy type where xx and yy are borrowed instead of cloning
-#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+#[derive(Debug, Clone)]
 pub struct Spline<T: Float + fmt::Debug>{
 	pub breaks_x: Vec<T>,
 	pub breaks_y: Vec<T>,
 	pub coeffs: Vec<[T;4]>,
 	last: usize,
 }
-
+/*
 impl<T: Float + fmt::Debug> num::Zero for Spline<T>{
 	
 	fn zero() -> Self {
@@ -63,7 +62,7 @@ impl<T: Float + fmt::Debug> Add<Self> for Spline<T> {
 	}
 	
 }
-
+*/
 impl<T: Float + fmt::Debug> Spline<T> {
 	
 	pub fn new(xx: &[T], yy: &[T], ss: &[T])->Self { // xx is the principal variable, yy is a dependent variable
@@ -84,8 +83,10 @@ impl<T: Float + fmt::Debug> Spline<T> {
 			}
 		}
 		return Self{
-			breaks_x: xx.iter().map(|idx| *idx).collect(), // breaks at xx values
-			breaks_y: yy.iter().map(|idx| *idx).collect(),
+			//breaks_x: xx.iter().map(|idx| *idx).collect(), // breaks at xx values
+			//breaks_y: yy.iter().map(|idx| *idx).collect(),
+			breaks_x: xx.to_vec(),
+			breaks_y: yy.to_vec(),
 			coeffs: coeffs,
 			last: 0,
 		};
@@ -105,7 +106,7 @@ impl<T: Float + fmt::Debug> Spline<T> {
 	}
 	/// checks whether value x is inside interval at idx
 	fn check_index(&self, idx: &usize, x: &T)->bool{
-		return _interval_inside(x, (&self.breaks_x[*idx], &self.breaks_x[*idx+1]));
+		return interval_inside(x, (&self.breaks_x[*idx], &self.breaks_x[*idx+1]));
 	}
 	
 	pub fn yvalue(&self, index: usize)-> T {
@@ -163,7 +164,7 @@ impl<T: Float + fmt::Debug> Spline<T> {
 	pub fn interpolate_diff1_for_index(&self, x: &T, index: usize)->Option<T>{
 		let xs = *x - self.breaks_x[index];
 		let coeffs = &self.coeffs[index];
-		let c1 = coeffs[0]*coeffs[0]*xs;
+		let c1 = coeffs[0]*xs*xs;
 		let c2 = coeffs[1]*xs;
 		return Some(c1 + c1 + c1 + c2 + c2 + coeffs[2]);
 	}
