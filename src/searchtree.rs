@@ -1,6 +1,8 @@
 // search_tree.rs
 
 //! This module handles inverse cubic interpolation (finding all xs corresponding to a given value of y). Since in general case, there might be multiple values, the standard bincode which works for monotonous functions, will not work. Instread, a search tree is constructed which map monotonous regions of y->x mapping and root search happens in the tree subdivisions.
+//! 
+//! TODO - finish docs.
 
 use std::fmt::{Debug};
 use std::collections::{HashMap,BTreeSet};
@@ -40,7 +42,6 @@ impl<T: Float + Debug> SearchNode<T>{
 		return Self {
 			interval: [first,last],
 			children: [0;2],
-			//links: [0;2],
 			parent: 0,
 			minmaxs: minmaxs,
 		};
@@ -54,7 +55,6 @@ impl<T: Float + Debug> SearchNode<T>{
 		return Self {
 			interval: [0;2],
 			children: [0;2],
-			//links: [0;2],
 			parent: 0,
 			minmaxs: minmaxs,
 		};
@@ -82,7 +82,7 @@ where T: Float + Debug, K : Eq + Hash,
 			pps: pps,
 		};
 		let extrema = tree.search_extrema_linear();
-		println!("extrema = {:?}", &extrema);
+		//println!("extrema = {:?}", &extrema);
 		for k in 0..extrema.len(){
 			tree.split_node_at(1, extrema[k].0);
 		}
@@ -97,17 +97,13 @@ where T: Float + Debug, K : Eq + Hash,
 		let mut res : Vec<(usize,usize)> = Vec::new();
 		for k in 0..self.pps.len(){
 			for m in 0..indices.len(){
-			//for m in 0..1{
 				let brk = self.pps.get_break_for_index_by_idx(m, k).unwrap();
-				//println!("k = {:?}, brk = {:?} at var {:?}", &k, &brk, &m);
 				if k == 0 {
 					previous[m] = brk;
 					continue;
 				}
 				if brk < previous[m] {
-					//println!("k = {:?}, CASE LOWER at var {:?}", &k, &m);
 					if k >= 2 && increasing[m] {
-						//println!("k = {:?}, CASE PUSH at var {:?}", &k, &m);
 						res.push((k-1,m));
 					}
 					indices[m] = k;
@@ -115,9 +111,7 @@ where T: Float + Debug, K : Eq + Hash,
 					increasing[m] = false;
 					setprev[m] = true;
 				} else {
-					println!("k = {:?}, CASE HIGHER at var {:?}", &k, &m);
 					if k >= 2 && !increasing[m]{
-						println!("k = {:?}, CASE PUSH at var {:?}", &k, &m);
 						res.push((k-1,m));
 					}
 					indices[m] = k;
@@ -171,22 +165,20 @@ where T: Float + Debug, K : Eq + Hash,
 	fn update_parent(&mut self, nindex: usize){
 		if nindex == 0 {return;}
 		let parent = self.nodes[nindex].parent;
-		println!("update {:?} parent {:?}", &nindex, &parent);
 		if parent == 0 {return;}
 		for k in 0..self.nodes[nindex].minmaxs.len(){
 			// check minimum value
 			if self.nodes[nindex].minmaxs[k][0] < self.nodes[parent].minmaxs[k][0]{
-				println!("UPDATE PARENT MIN");
 				self.nodes[parent].minmaxs[k][0] = self.nodes[nindex].minmaxs[k][0];
 			}
 			// check maximum value
 			if self.nodes[nindex].minmaxs[k][1] > self.nodes[parent].minmaxs[k][1]{
-				println!("UPDATE PARENT MAX");
 				self.nodes[parent].minmaxs[k][1] = self.nodes[nindex].minmaxs[k][1];
 			}
 		}
 	}
 	
+	/// TODO
 	pub fn interval_indices<Q: ?Sized>(&self, key: &Q, x: &T)->Vec<T>
 	where K: Borrow<Q>, Q : Hash + Eq,
 	{
