@@ -160,7 +160,7 @@ where K : Eq + Hash, T : Float + std::fmt::Debug,
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/
 
-/// Make interpolation structure from csv file contents
+/// Make interpolation structure from csv file contents.
 pub fn load_multispline_from_csv(datafile: &str)->Result<MultiSpline<String,f64>, Box<dyn Error>>{
 	let file = File::open(&Path::new(datafile))?;
 	let mut reader = Reader::from_reader(file);
