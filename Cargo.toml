@@ -1,7 +1,21 @@
 [package]
 name = "spline1d"
 version = "0.1.0"
+authors = ["Evgenii Nekhoroshev evgnekhoroshev@gmail.com"]
 edition = "2021"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/evnekdev/spline1d"
+homepage = "https://github.com/evnekdev/spline1d"
+description = "Fast local one-dimensional cubic interpolation with full splines, interval-local interpolation primitives, and inverse lookup."
+categories = ["algorithms", "mathematics"]
+keywords = [
+    "spline",
+    "interpolation",
+    "cubic",
+    "pchip",
+    "makima"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

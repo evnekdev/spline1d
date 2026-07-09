@@ -17,7 +17,7 @@ use crate::binary_search_interval;
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 
-/// Search Node
+/// Search Node in `SearchTree`
 #[derive(Debug, Clone)]
 pub struct SearchNode<T>
 where T: Float + Debug,
@@ -65,6 +65,9 @@ impl<T: Float + Debug> SearchNode<T>{
 /*************************************************************************************************************/
 /*************************************************************************************************************/
 
+/// `SearchTree` builds a tree-like structure mapping all monotonous y regions in a `MultiSpline` for each y variable type.
+///
+/// `SearchTree` allows efficient finding of all x values for y = const (does not have to be monotonous!).
 #[derive(Debug)]
 pub struct SearchTree<'a, K, T>
 where T: Float + Debug, K : Eq + Hash,
@@ -89,6 +92,7 @@ where T: Float + Debug, K : Eq + Hash,
 		return tree;
 	}
 	
+	/// Among y breakpoints, find local minima and maxima to use them to delineate the search tree spans.
 	pub fn search_extrema_linear(&self)->Vec<(usize,usize)>{ // index, variable #
 		let mut previous : Vec<T> = vec![T::zero();self.nodes[1].minmaxs.len()];
 		let mut indices : Vec<usize> = vec![0usize;self.nodes[1].minmaxs.len()];
@@ -123,7 +127,8 @@ where T: Float + Debug, K : Eq + Hash,
 		}
 		return res;
 	}
-
+	
+	/// produce a split at a value.
 	pub fn split_node_at(&mut self, nindex: usize, new_index: usize)->Option<(usize,usize)>{
 		if new_index <= self.nodes[nindex].interval[0] || new_index >= self.nodes[nindex].interval[1] {return None;}
 		if self.nodes[nindex].children[0] > 0 {
@@ -224,6 +229,7 @@ where T: Float + Debug, K : Eq + Hash,
 		return binary_search_interval(index1 - index0 + 1, x, |ix| self.pps.tt[ix + index0]).map(|idx| idx + index0);
 	}
 	
+	/// The main interpolation function, returns all `keyy` values for `keyx` = `x`.
 	pub fn interpolate<Q: ?Sized>(&self, keyx: &Q, keyy: &Q, x: &T)->Vec<T>
 	where K: Borrow<Q>, Q : Hash + Eq,
 	{
