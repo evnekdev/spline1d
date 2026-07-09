@@ -84,38 +84,50 @@ fn main() {
 - NaN and infinity are not supported in interval lookup.
 - The `std` feature is required for CSV loading and the current `MultiSpline` / `SearchTree` helpers.
 
-## Inverse lookup
+## Inverse lookup and multi-value interpolation
 
-In addition to conventional interpolation (`x → y`), `spline1d` provides efficient **inverse lookup** (`y → x`).
+`spline1d` supports inverse lookup through `SearchTree` and `SearchNode`.
 
-Given a target value `y`, the library can locate **every** corresponding `x` value satisfying
+This is useful when the independent and dependent variables need to be swapped, for example when finding all values of `x` corresponding to a target value of `y`.
+
+Unlike a simple binary search, inverse lookup cannot assume that the spline is globally monotone. A single value of `y` may correspond to several different `x` values. `SearchTree` handles this by splitting the spline into monotone regions and searching only the regions whose value ranges contain the requested target.
+
+Conceptually, this allows queries such as:
 
 ```text
-Spline(x) = y
+x -> y
 ```
 
-This capability is particularly useful for calibration curves, lookup tables, engineering property databases, phase diagrams, signal processing, and other applications where a function must be queried in both directions.
+and also:
 
-Inverse lookup is implemented using the `SearchTree` and `SearchNode` structures. Rather than scanning every spline interval, a search tree organizes intervals according to their value ranges, allowing only potentially matching intervals to be examined before solving the corresponding cubic equations.
+```text
+y -> all matching x values
+```
+
+The tree is built from a `MultiSpline`:
 
 ```rust
-use spline1d::prelude::*;
+use spline1d::*;
 
-let xs = vec![0.0, 1.0, 2.0, 3.0];
-let ys = vec![0.0, 2.0, 1.0, 4.0];
-
-let spline = Spline::makima(&xs, &ys);
-
-// Construct a search tree for efficient inverse lookup.
-let tree = SearchTree::new(&spline);
-
-// Find every x such that spline(x) = 1.5.
-let xs = tree.inverse(1.5);
+let tree = SearchTree::new(&multispline);
 ```
 
-Unlike many interpolation libraries that assume the interpolated function is monotone and return at most one solution, `spline1d` supports **non-monotone** splines and returns **all** valid solutions. This makes it suitable for functions with multiple local extrema, where the same output value may occur at several distinct locations.
+Then interpolation can be performed between any registered variables:
 
-The search tree is reusable, making repeated inverse queries efficient even for large splines.
+```rust
+let values = tree.interpolate(&key_x, &key_y, &value);
+```
+
+Depending on the selected keys, this can perform:
+
+* ordinary interpolation from the principal coordinate to a dependent variable;
+* inverse interpolation from a dependent variable back to the principal coordinate;
+* cross-variable interpolation through the principal coordinate;
+* identity lookup when both keys refer to the principal coordinate.
+
+For non-monotone data, the returned `Vec<T>` may contain multiple values. This means `spline1d` can find all valid solutions instead of returning only the first match or requiring the user to scan intervals manually.
+
+Internally, each `SearchNode` stores an interval of spline indices and value ranges for every variable. During lookup, branches whose min/max range cannot contain the target value are skipped. Candidate monotone regions are then searched and evaluated locally.
 
 
 ## License
