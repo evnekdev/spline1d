@@ -2,17 +2,18 @@
 
 //! The main structure in this module, `Spline`, encapsulates the calculated cubic spline coefficients and automatically handles interval location and interpolation using the appropriate set of cubic coefficients.
 
-use std::fmt;
-use std::collections::{HashMap};
-use std::hash::{Hash};
-use std::borrow::{Borrow};
-use std::fs::{File};
-use std::path::{Path};
-use std::error::{Error};
+use core::fmt;
+#[cfg(feature = "std")]
+use std::fs::File;
+#[cfg(feature = "std")]
+use std::path::Path;
+#[cfg(feature = "std")]
+use std::error::Error;
 
-use core::ops::{Add};
-use num::{Float, Zero};
-use csv::{Reader};
+use alloc::vec::Vec;
+use num_traits::{Float, Zero};
+#[cfg(feature = "std")]
+use csv::Reader;
 
 use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
 use crate::solve::{calculate_root};

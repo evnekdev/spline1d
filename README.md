@@ -1,148 +1,89 @@
-# Spline1d
+# spline1d
 
-> A pure Rust library for 1D cubic spline interpolation, featuring Makima interpolation and tools for evaluation, root finding, and inverse lookup.
+A pure Rust library for fast 1D cubic interpolation primitives.
 
-![Rust](https://img.shields.io/badge/language-Rust-orange)
-![Status](https://img.shields.io/badge/status-active-green)
-![License](https://img.shields.io/github/license/evnekdev/splines)
+The crate provides both allocation-free single-interval functions and allocation-backed spline containers.
 
----
+## Methods
 
-## 📌 Overview
+Implemented local cubic interpolation methods:
 
-Spline1d is a Rust crate for constructing and evaluating cubic spline interpolations.
+- Akima
+- Makima
+- PCHIP
+- Steffen
+- Catmull-Rom
+- Cardinal
+- Fritsch-Butland
 
-### Current capabilities:
-- Makima interpolation (fully implemented)
-- PCHIP interpolation (work in progress)
-- Piecewise polynomial evaluation (PPData)
-- Fast binary search interval lookup
-- Inverse interpolation via search trees
-- CSV data loading
+## Feature flags
 
----
+```toml
+[features]
+default = ["std"]
+std = ["alloc", "dep:csv"]
+alloc = []
+```
 
-## ✨ Features
+- `std` is enabled by default. It enables the full API, including CSV helpers and multi-spline/search-tree helpers.
+- `alloc` enables heap-backed spline containers such as `Spline<T>` without requiring `std`.
+- `--no-default-features` builds the allocation-free `no_std` API. In this mode, single-interval functions and alpha conversions remain available, but `Spline<T>`, `MultiSpline`, and CSV loading are not compiled.
 
-- Cubic spline interpolation (Makima)
-- Piecewise polynomial representation
-- Fast interval lookup
-- Inverse interpolation
-- CSV support
-- Generic over floating-point types
+## no_std usage
 
----
+For allocation-free single-interval interpolation:
 
-## 🛠️ Tech Stack
+```toml
+spline1d = { version = "0.1", default-features = false }
+```
 
-- Rust
-- num
-- csv
-- serde
-
----
-
-## 🚀 Getting Started
-
-git clone https://github.com/evnekdev/spline1d.git
-
-cd splines
-
-cargo build
-
-cargo run
-
----
-
-## 📊 Usage
+Example:
 
 ```rust
-use splines::makima;
+use spline1d::pchip_single_middle;
+
+let coeffs = pchip_single_middle(
+    0.0, 0.0,
+    1.0, 1.0,
+    2.0, 1.5,
+    3.0, 2.0,
+);
+```
+
+For heap-backed `Spline<T>` without `std`:
+
+```toml
+spline1d = { version = "0.1", default-features = false, features = ["alloc"] }
+```
+
+For the default desktop/server API:
+
+```toml
+spline1d = "0.1"
+```
+
+## Basic usage
+
+```rust
+use spline1d::makima;
 
 fn main() {
     let x = vec![0.0, 1.0, 2.0, 3.0];
     let y = vec![0.0, 2.0, 1.0, 3.0];
 
     let spline = makima(&x, &y);
-    let value = spline.eval(1.5);
+    let value = spline.interpolate(&1.5);
 
-    println!("Interpolated value: {}", value);
+    println!("Interpolated value: {:?}", value);
 }
 ```
 
----
+## Current limitations
 
-## 🧩 Core Concepts
+- `x` values should be monotonic.
+- NaN and infinity are not supported in interval lookup.
+- The `std` feature is required for CSV loading and the current `MultiSpline` / `SearchTree` helpers.
 
-### PPData
-Stores spline coefficients and enables evaluation.
-
-### Makima
-Smooth interpolation avoiding oscillations.
-
-### PCHIP
-Shape-preserving interpolation (WIP).
-
-### Binary Search
-Efficient interval lookup.
-
-### SearchTree
-Inverse interpolation for non-monotonic curves.
-
-### Root Solver
-Analytical cubic solver.
-
----
-
-## 📂 CSV Loading
-
-use splines::load_mpp_from_csv;
-
----
-
-## 🧪 Testing
-
-cargo test
-
----
-
-## ⚠️ Limitations
-
-- Requires monotonic x values
-- No NaN/Infinity handling
-- PCHIP incomplete
-
----
-
-## 📈 Roadmap
-
-- Complete PCHIP
-- Add 2D splines
-- Improve docs
-- Add benchmarks
-- Visualization tools
-
----
-
-## 🤝 Contributing
-
-Fork → branch → commit → PR
-
----
-
-## 🐛 Issues
-
-https://github.com/evnekdev/splines/issues
-
----
-
-## 📄 License
+## License
 
 MIT
-
----
-
-## 📬 Contact
-
-Evgenii Nekhoroshev
-https://github.com/evnekdev

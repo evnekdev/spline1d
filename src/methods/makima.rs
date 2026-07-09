@@ -2,20 +2,28 @@
 
 //! Makima interpolation method (copied from Matlab)
 
-use num::{Float};
+use num_traits::Float;
 
-use crate::spline::{Spline};
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
+
+#[cfg(feature = "alloc")]
+use crate::spline::Spline;
 use crate::binsearch::{diff, kernel_conv};
 use crate::alpha::cubic_coeffs_to_alpha;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container
-pub fn makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
+#[cfg(feature = "alloc")]
+pub fn makima<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T])->Spline<T>{
 	let ss = slopes_makima(xx, yy);
 	return Spline::new(xx, yy, &ss);
 }
 
 /// Estimation of the tangent lines at xx points using the makima method
-pub fn slopes_makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Vec<T>{
+#[cfg(feature = "alloc")]
+pub fn slopes_makima<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T])->Vec<T>{
 	let hh : Vec<T> = diff(xx).collect();
 	let delta : Vec<T> = diff(yy).zip(hh.iter()).map(|(dy,dx)| dy/ *dx).collect();
 	// special case of two points, use linear slope

@@ -2,7 +2,6 @@
 
 fn powf_(x: f64, pow: f64)->f64{
 	let absroot = x.abs().powf(pow);
-	println!("x = {:?}, absroot = {:?}", &x, &absroot);
 	if x < 0.0 {
 		return -absroot;
 	}
@@ -15,14 +14,11 @@ pub fn calculate_root(coeffs: &[f64])->f64{
 	let b = coeffs[1];
 	let c = coeffs[2];
 	let d = coeffs[3];
-	println!("a = {:?}, b = {:?}, c = {:?}, d = {:?}", &a, &b, &c, &d);
 	let q = (3.0*a*c- b*b)/(9.0*a*a);
 	let r = (9.0*a*b*c-27.0*a*a*d-2.0*b*b*b)/(54.0*a*a*a);
-	println!("q = {:?}, r = {:?}", &q, &r);
 	let sqrtvalue = f64::sqrt(q*q*q + r*r);
 	let s = powf_(r + sqrtvalue, 1.0/3.0);
 	let t = powf_(r - sqrtvalue, 1.0/3.0);
-	println!("s = {:?}, t = {:?}", &s, &t);
 	let x1 = s + t - b/(3.0*a);
 	return x1;
 }

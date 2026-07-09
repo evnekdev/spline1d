@@ -10,17 +10,24 @@
 //! Therefore `tension = 0` gives Catmull-Rom, and increasing `tension` shrinks
 //! the node derivatives.
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
 use crate::binsearch::diff;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
 ///
 /// `tension = 0` gives Catmull-Rom.  Larger tension reduces all tangents by the
 /// factor `1 - tension`.
-pub fn cardinal<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T], tension: T) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn cardinal<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T], tension: T) -> Spline<T> {
     let ss = slopes_cardinal(xx, yy, tension);
     return Spline::new(xx, yy, &ss);
 }
@@ -29,6 +36,7 @@ pub fn cardinal<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T], tension: T) -> S
 ///
 /// Endpoint slopes are the adjacent secant slopes scaled by `1 - tension`.
 /// Interior slopes use the two-sided neighbour slope scaled by `1 - tension`.
+#[cfg(feature = "alloc")]
 pub fn slopes_cardinal<T: Float>(xx: &[T], yy: &[T], tension: T) -> Vec<T> {
     let n = xx.len();
 

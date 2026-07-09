@@ -5,7 +5,7 @@
 //! `akima`, `makima`, `pchip`, `steffen`, `catmullrom`, `cardinal`, and
 //! `fritschbutland`.
 
-use num::{Float};
+use num_traits::Float;
 
 pub mod akima;
 pub mod makima;
@@ -16,8 +16,6 @@ pub mod cardinal;
 pub mod fritschbutland;
 
 pub use self::akima::{
-    akima,
-    slopes_akima,
     akima_single_left,
     akima_single_middle,
     akima_single_right,
@@ -25,9 +23,10 @@ pub use self::akima::{
     akima_single_middle_alpha,
     akima_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::akima::{akima, slopes_akima};
+
 pub use self::makima::{
-    makima,
-    slopes_makima,
     makima_single_left,
     makima_single_middle,
     makima_single_right,
@@ -35,9 +34,10 @@ pub use self::makima::{
     makima_single_middle_alpha,
     makima_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::makima::{makima, slopes_makima};
+
 pub use self::pchip::{
-    pchip,
-    slopes_pchip,
     pchip_single_left,
     pchip_single_middle,
     pchip_single_right,
@@ -45,9 +45,10 @@ pub use self::pchip::{
     pchip_single_middle_alpha,
     pchip_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::pchip::{pchip, slopes_pchip};
+
 pub use self::steffen::{
-    steffen,
-    slopes_steffen,
     steffen_single_left,
     steffen_single_middle,
     steffen_single_right,
@@ -55,9 +56,10 @@ pub use self::steffen::{
     steffen_single_middle_alpha,
     steffen_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::steffen::{steffen, slopes_steffen};
+
 pub use self::catmullrom::{
-    catmullrom,
-    slopes_catmullrom,
     catmullrom_single_left,
     catmullrom_single_middle,
     catmullrom_single_right,
@@ -65,9 +67,10 @@ pub use self::catmullrom::{
     catmullrom_single_middle_alpha,
     catmullrom_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::catmullrom::{catmullrom, slopes_catmullrom};
+
 pub use self::cardinal::{
-    cardinal,
-    slopes_cardinal,
     cardinal_single_left,
     cardinal_single_middle,
     cardinal_single_right,
@@ -75,9 +78,10 @@ pub use self::cardinal::{
     cardinal_single_middle_alpha,
     cardinal_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::cardinal::{cardinal, slopes_cardinal};
+
 pub use self::fritschbutland::{
-    fritschbutland,
-    slopes_fritschbutland,
     fritschbutland_single_left,
     fritschbutland_single_middle,
     fritschbutland_single_right,
@@ -85,6 +89,8 @@ pub use self::fritschbutland::{
     fritschbutland_single_middle_alpha,
     fritschbutland_single_right_alpha,
 };
+#[cfg(feature = "alloc")]
+pub use self::fritschbutland::{fritschbutland, slopes_fritschbutland};
 
 #[derive(Clone,Copy,Debug)]
 pub enum InterpolationType<T: Float> {

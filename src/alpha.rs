@@ -5,7 +5,7 @@
 //! `y(t) = y1 * (1 - t) + y2 * t + (1 - t) * t * (alpha0 + alpha1 * t)`,
 //! where `t = (x - x1) / (x2 - x1)`.
 
-use num::Float;
+use num_traits::Float;
 
 /// Convert direct cubic coefficients `[a, b, c, d]` on `dx = x - x1` to
 /// normalized interval coefficients `[alpha0, alpha1]`.

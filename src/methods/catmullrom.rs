@@ -7,27 +7,35 @@
 //!
 //! `m_i = (y_{i+1} - y_{i-1}) / (x_{i+1} - x_{i-1})`.
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
 use super::cardinal::{
-    cardinal,
     cardinal_single_left,
     cardinal_single_middle,
     cardinal_single_right,
-    slopes_cardinal,
 };
+#[cfg(feature = "alloc")]
+use super::cardinal::{cardinal, slopes_cardinal};
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
-pub fn catmullrom<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn catmullrom<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
     return cardinal(xx, yy, T::zero());
 }
 
 /// Estimation of tangent lines at `xx` points using Catmull-Rom central differences.
 ///
 /// This is equivalent to [`slopes_cardinal`] with zero tension.
+#[cfg(feature = "alloc")]
 pub fn slopes_catmullrom<T: Float>(xx: &[T], yy: &[T]) -> Vec<T> {
     return slopes_cardinal(xx, yy, T::zero());
 }

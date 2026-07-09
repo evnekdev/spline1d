@@ -6,14 +6,21 @@
 //! a little more conservative than PCHIP: it strongly limits node derivatives
 //! around sharp changes and avoids overshoot for monotone data.
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
 use crate::binsearch::diff;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
-pub fn steffen<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn steffen<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
     let ss = slopes_steffen(xx, yy);
     return Spline::new(xx, yy, &ss);
 }
@@ -30,6 +37,7 @@ pub fn steffen<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
 /// `p_i = (d_{i-1} * h_i + d_i * h_{i-1}) / (h_{i-1} + h_i)`.
 ///
 /// If adjacent secant slopes have opposite signs, the node slope is zero.
+#[cfg(feature = "alloc")]
 pub fn slopes_steffen<T: Float>(xx: &[T], yy: &[T]) -> Vec<T> {
     let n = xx.len();
 

@@ -2,14 +2,21 @@
 
 //! PCHIP interpolation method (translated from Matlab's `pchipSlopes`).
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::binsearch::diff;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 use crate::alpha::cubic_coeffs_to_alpha;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
-pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn pchip<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
     let hh: Vec<T> = diff(xx).collect();
     let delta: Vec<T> = diff(yy).zip(hh.iter()).map(|(dy, dx)| dy / *dx).collect();
     let ss = slopes_pchip(xx, yy, &delta);
@@ -22,6 +29,7 @@ pub fn pchip<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
 /// routine. For a monotone sequence, the slopes are shape-preserving: interior
 /// slopes are zero when adjacent secant slopes change sign, and otherwise use
 /// the weighted harmonic mean formula.
+#[cfg(feature = "alloc")]
 pub fn slopes_pchip<T: Float>(xx: &[T], _yy: &[T], delta: &[T]) -> Vec<T> {
     let n = xx.len();
 

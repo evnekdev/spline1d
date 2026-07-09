@@ -7,14 +7,21 @@
 //! formula. Missing endpoint secant slopes are obtained by linear extrapolation,
 //! matching the endpoint treatment used by the existing Makima implementation.
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
 use crate::binsearch::diff;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
-pub fn akima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn akima<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
     let ss = slopes_akima(xx, yy);
     return Spline::new(xx, yy, &ss);
 }
@@ -31,6 +38,7 @@ pub fn akima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
 ///
 /// If both weights are zero, the conventional Akima fallback
 /// `(delta_{i-1} + delta_i)/2` is used.
+#[cfg(feature = "alloc")]
 pub fn slopes_akima<T: Float>(xx: &[T], yy: &[T]) -> Vec<T> {
     let n = xx.len();
 

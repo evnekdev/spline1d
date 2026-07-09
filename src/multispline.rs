@@ -10,7 +10,7 @@ use std::path::{Path};
 use std::error::{Error};
 
 use core::ops::{Add};
-use num::{Float, Zero};
+use num_traits::{Float, Zero};
 use csv::{Reader};
 
 use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
@@ -32,7 +32,7 @@ where T: Float + fmt::Debug,
 }
 
 impl<K,T: Float> MultiSpline<K,T>
-where K : Eq + Hash, T : Float + std::fmt::Debug,
+where K : Eq + Hash, T : Float + core::fmt::Debug,
 	{
 	/// Initialize the interpolation structure using x0 variable as a principal variable
 	pub fn new(key: K, tt: &[T])->Self{

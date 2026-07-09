@@ -8,14 +8,21 @@
 //! slopes have opposite signs or either is zero, the node derivative is zero;
 //! otherwise a limited harmonic-type mean is used.
 
-use num::Float;
+use num_traits::Float;
+
+#[cfg(feature = "alloc")]
+use alloc::vec;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
 use crate::binsearch::diff;
+#[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
-pub fn fritschbutland<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
+#[cfg(feature = "alloc")]
+pub fn fritschbutland<T: Float + core::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<T> {
     let ss = slopes_fritschbutland(xx, yy);
     return Spline::new(xx, yy, &ss);
 }
@@ -30,6 +37,7 @@ pub fn fritschbutland<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T]) -> Spline<
 ///
 /// Endpoint slopes use the same shape-preserving one-sided three-point formula
 /// used by PCHIP/Netlib PCHIM.
+#[cfg(feature = "alloc")]
 pub fn slopes_fritschbutland<T: Float>(xx: &[T], yy: &[T]) -> Vec<T> {
     let n = xx.len();
 

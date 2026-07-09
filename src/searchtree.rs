@@ -4,12 +4,12 @@
 //! 
 //! TODO - finish docs.
 
-use std::fmt::{Debug};
-use std::collections::{HashMap,BTreeSet};
-use std::hash::{Hash};
-use std::borrow::{Borrow};
+use std::fmt::Debug;
+use std::collections::{HashMap, BTreeSet};
+use std::hash::Hash;
+use std::borrow::Borrow;
 
-use num::{Float};
+use num_traits::Float;
 
 use crate::multispline::MultiSpline;
 use crate::binary_search_interval;
