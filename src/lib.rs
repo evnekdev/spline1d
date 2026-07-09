@@ -1,7 +1,9 @@
 // lib.rs (splines library)
 
 //! This crate performs cubic spline interpolation in pure Rust (1-D curves).
-//! Currently, three methods of cubic interpolation are available: `makima`, `pchip`, and `steffen`.
+//! Currently, the following local cubic interpolation methods are available:
+//! `akima`, `makima`, `pchip`, `steffen`, `catmullrom`, `cardinal`, and
+//! `fritschbutland`.
 //! The original publications of the cubic interpolation methods are located in the project folder; the working formulas for makima and pchip are copied after the Matlab in-built methods.
 //! 
 //! Cubic interpolation is available in two flavors: single-interval functions calculating cubic coefficients directly (4-values) or producing a structure with interval breaks alongside with cubic coefficients used to lookup the containing interpolation intervals for `xs`.
@@ -19,18 +21,82 @@ pub mod multispline;
 pub mod solve;
 pub mod searchtree;
 
-use num::{Float};
-
-pub use crate::methods::{makima, makima_single_left, makima_single_middle, makima_single_right, makima_single_left_alpha, makima_single_middle_alpha, makima_single_right_alpha};
-pub use crate::methods::{pchip, pchip_single_left, pchip_single_middle, pchip_single_right, pchip_single_left_alpha, pchip_single_middle_alpha, pchip_single_right_alpha};
-pub use crate::methods::{steffen, slopes_steffen, steffen_single_left, steffen_single_middle, steffen_single_right, steffen_single_left_alpha, steffen_single_middle_alpha, steffen_single_right_alpha};
+pub use crate::methods::akima::{
+    akima,
+    slopes_akima,
+    akima_single_left,
+    akima_single_middle,
+    akima_single_right,
+    akima_single_left_alpha,
+    akima_single_middle_alpha,
+    akima_single_right_alpha,
+};
+pub use crate::methods::makima::{
+    makima,
+    slopes_makima,
+    makima_single_left,
+    makima_single_middle,
+    makima_single_right,
+    makima_single_left_alpha,
+    makima_single_middle_alpha,
+    makima_single_right_alpha,
+};
+pub use crate::methods::pchip::{
+    pchip,
+    slopes_pchip,
+    pchip_single_left,
+    pchip_single_middle,
+    pchip_single_right,
+    pchip_single_left_alpha,
+    pchip_single_middle_alpha,
+    pchip_single_right_alpha,
+};
+pub use crate::methods::steffen::{
+    steffen,
+    slopes_steffen,
+    steffen_single_left,
+    steffen_single_middle,
+    steffen_single_right,
+    steffen_single_left_alpha,
+    steffen_single_middle_alpha,
+    steffen_single_right_alpha,
+};
+pub use crate::methods::catmullrom::{
+    catmullrom,
+    slopes_catmullrom,
+    catmullrom_single_left,
+    catmullrom_single_middle,
+    catmullrom_single_right,
+    catmullrom_single_left_alpha,
+    catmullrom_single_middle_alpha,
+    catmullrom_single_right_alpha,
+};
+pub use crate::methods::cardinal::{
+    cardinal,
+    slopes_cardinal,
+    cardinal_single_left,
+    cardinal_single_middle,
+    cardinal_single_right,
+    cardinal_single_left_alpha,
+    cardinal_single_middle_alpha,
+    cardinal_single_right_alpha,
+};
+pub use crate::methods::fritschbutland::{
+    fritschbutland,
+    slopes_fritschbutland,
+    fritschbutland_single_left,
+    fritschbutland_single_middle,
+    fritschbutland_single_right,
+    fritschbutland_single_left_alpha,
+    fritschbutland_single_middle_alpha,
+    fritschbutland_single_right_alpha,
+};
 pub use crate::alpha::{cubic_coeffs_to_alpha, cubic_coeffs_to_alpha_unit, alpha_to_cubic_coeffs, alpha_to_standard_cubic_coeffs};
-pub use crate::binsearch::{binary_search_interval};
-pub use crate::spline::{Spline};
+pub use crate::binsearch::binary_search_interval;
+pub use crate::spline::Spline;
 pub use crate::multispline::{MultiSpline, load_multispline_from_csv};
-pub use crate::searchtree::{SearchNode,SearchTree};
+pub use crate::searchtree::{SearchNode, SearchTree};
 
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/
-
 

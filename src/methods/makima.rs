@@ -30,12 +30,10 @@ pub fn slopes_makima<T: Float + std::fmt::Debug>(xx: &[T], yy: &[T])->Vec<T>{
 	let delta_n1 : T = (delta_n+delta_n) - delta[n-2];
 	let delta_prefix = vec![delta_m2,delta_m1];
 	let delta_suffix = vec![delta_n, delta_n1];
-	let mut delta_new : Vec<T> = delta_prefix.iter().chain(delta.iter()).chain(delta_suffix.iter()).map(|&v| v).collect();
+	let delta_new : Vec<T> = delta_prefix.iter().chain(delta.iter()).chain(delta_suffix.iter()).map(|&v| v).collect();
 	let k1 = [-T::one(),T::one()];
 	let half : T = T::one()/(T::one() + T::one());
 	let k2 = [half, half];
-	let it1 : Vec<T> = kernel_conv(&delta_new, &k1).map(|v| v.abs()).collect();
-	let it2 : Vec<T> = kernel_conv(&delta_new, &k2).map(|v| v.abs()).collect();
 	let it1 = kernel_conv(&delta_new, &k1).map(|v| v.abs());
 	let it2 = kernel_conv(&delta_new, &k2).map(|v| v.abs());
 	let weights : Vec<T> = it1.zip(it2).map(|(v1,v2)| v1+v2).collect();

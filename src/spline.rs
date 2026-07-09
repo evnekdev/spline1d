@@ -15,9 +15,6 @@ use num::{Float, Zero};
 use csv::{Reader};
 
 use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
-use crate::makima;
-use crate::pchip;
-use crate::steffen;
 use crate::solve::{calculate_root};
 
 /*************************************************************************************************************/
@@ -56,19 +53,39 @@ impl<T: Float + fmt::Debug> Spline<T> {
 			last: 0,
 		};
 	}
+	/// A new instance using `AKIMA` method.
+	pub fn akima(xx: &[T], yy: &[T])->Self {
+		return crate::methods::akima::akima(xx, yy);
+	}
+	
 	/// A new instance using `MAKIMA` method.
 	pub fn makima(xx: &[T], yy: &[T])->Self {
-		return makima(xx, yy);
+		return crate::methods::makima::makima(xx, yy);
 	}
 	
 	/// A new instance using `PCHIP` method.
 	pub fn pchip(xx: &[T], yy: &[T])->Self {
-		return pchip(xx, yy);
+		return crate::methods::pchip::pchip(xx, yy);
 	}
 	
 	/// A new instance using `STEFFEN` method.
 	pub fn steffen(xx: &[T], yy: &[T])->Self {
-		return steffen(xx, yy);
+		return crate::methods::steffen::steffen(xx, yy);
+	}
+	
+	/// A new instance using `CATMULL-ROM` method.
+	pub fn catmullrom(xx: &[T], yy: &[T])->Self {
+		return crate::methods::catmullrom::catmullrom(xx, yy);
+	}
+	
+	/// A new instance using `CARDINAL` method.
+	pub fn cardinal(xx: &[T], yy: &[T], tension: T)->Self {
+		return crate::methods::cardinal::cardinal(xx, yy, tension);
+	}
+	
+	/// A new instance using `FRITSCH-BUTLAND` method.
+	pub fn fritschbutland(xx: &[T], yy: &[T])->Self {
+		return crate::methods::fritschbutland::fritschbutland(xx, yy);
 	}
 	
 	/// Returns the index of the interval containing value x.

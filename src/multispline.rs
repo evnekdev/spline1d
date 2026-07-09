@@ -14,8 +14,7 @@ use num::{Float, Zero};
 use csv::{Reader};
 
 use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
-use crate::makima::{makima};
-use crate::pchip::{pchip};
+use crate::methods::makima::makima;
 use crate::spline::Spline;
 use crate::solve::{calculate_root};
 
