@@ -25,5 +25,8 @@ fn main() {
     let alpha = fritschbutland_single_middle_alpha(0.0, 0.0, 1.0, 1.0, 2.0, 1.5, 3.0, 1.75);
 
     println!("single middle at x=1.5: {}", eval(coeffs, 1.0, 1.5));
-    println!("single middle alpha at t=0.5: {}", eval_alpha(1.0, 1.5, alpha, 0.5));
+    println!(
+        "single middle alpha at t=0.5: {}",
+        eval_alpha(1.0, 1.5, alpha, 0.5)
+    );
 }

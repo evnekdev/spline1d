@@ -16,6 +16,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
+#[cfg(feature = "alloc")]
 use crate::binsearch::diff;
 #[cfg(feature = "alloc")]
 use crate::spline::Spline;
@@ -83,7 +84,16 @@ pub fn fritschbutland_single_left<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y
 /// Uses one neighbouring point on each side of the target interval. The returned
 /// coefficients `[a, b, c, d]` are evaluated as `((a * dx + b) * dx + c) * dx + d`,
 /// where `dx = x - x1`.
-pub fn fritschbutland_single_middle<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 4] {
+pub fn fritschbutland_single_middle<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 4] {
     let d01 = secant(x0, y0, x1, y1);
     let d12 = secant(x1, y1, x2, y2);
     let d23 = secant(x2, y2, x3, y3);
@@ -115,7 +125,14 @@ pub fn fritschbutland_single_right<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, 
 /// The returned coefficients are for
 /// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
 /// where `t = (x - x1) / (x2 - x1)`.
-pub fn fritschbutland_single_left_alpha<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+pub fn fritschbutland_single_left_alpha<T: Float>(
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 2] {
     let coeffs = fritschbutland_single_left(x1, y1, x2, y2, x3, y3);
     return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }
@@ -125,7 +142,16 @@ pub fn fritschbutland_single_left_alpha<T: Float>(x1: T, y1: T, x2: T, y2: T, x3
 /// The returned coefficients are for
 /// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
 /// where `t = (x - x1) / (x2 - x1)`.
-pub fn fritschbutland_single_middle_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+pub fn fritschbutland_single_middle_alpha<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 2] {
     let coeffs = fritschbutland_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);
     return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }
@@ -135,7 +161,14 @@ pub fn fritschbutland_single_middle_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, 
 /// The returned coefficients are for
 /// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
 /// where `t = (x - x1) / (x2 - x1)`.
-pub fn fritschbutland_single_right_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T) -> [T; 2] {
+pub fn fritschbutland_single_right_alpha<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+) -> [T; 2] {
     let coeffs = fritschbutland_single_right(x0, y0, x1, y1, x2, y2);
     return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }
@@ -204,7 +237,10 @@ fn cubic_coeffs<T: Float>(x1: T, y1: T, x2: T, y2: T, s1: T, s2: T) -> [T; 4] {
 
 #[cfg(test)]
 mod tests {
-    use super::{fritschbutland_single_left, fritschbutland_single_middle, fritschbutland_single_right, slopes_fritschbutland};
+    use super::{
+        fritschbutland_single_left, fritschbutland_single_middle, fritschbutland_single_right,
+        slopes_fritschbutland,
+    };
 
     fn assert_close(a: f64, b: f64) {
         assert!((a - b).abs() < 1e-12, "{a} != {b}");
@@ -217,7 +253,8 @@ mod tests {
         let slopes = slopes_fritschbutland(&xx, &yy);
 
         let left = fritschbutland_single_left(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2]);
-        let middle = fritschbutland_single_middle(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
+        let middle =
+            fritschbutland_single_middle(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
         let right = fritschbutland_single_right(xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
 
         assert_close(left[2], slopes[0]);

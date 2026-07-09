@@ -73,7 +73,14 @@ pub fn alpha_to_cubic_coeffs<T: Float>(x1: T, y1: T, x2: T, y2: T, alpha0: T, al
 /// Prefer `alpha_to_cubic_coeffs` for spline evaluation, because the local
 /// `dx = x - x1` form is usually numerically better conditioned.
 #[inline]
-pub fn alpha_to_standard_cubic_coeffs<T: Float>(x1: T, y1: T, x2: T, y2: T, alpha0: T, alpha1: T) -> [T; 4] {
+pub fn alpha_to_standard_cubic_coeffs<T: Float>(
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    alpha0: T,
+    alpha1: T,
+) -> [T; 4] {
     let local = alpha_to_cubic_coeffs(x1, y1, x2, y2, alpha0, alpha1);
     let a = local[0];
     let b = local[1];

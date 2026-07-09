@@ -24,115 +24,87 @@
 extern crate alloc;
 
 pub mod alpha;
-pub mod methods;
 pub mod binsearch;
+pub mod methods;
 
-#[cfg(feature = "alloc")]
-pub mod spline;
 #[cfg(feature = "std")]
 pub mod multispline;
-#[cfg(feature = "alloc")]
-pub mod solve;
 #[cfg(feature = "std")]
 pub mod searchtree;
+#[cfg(feature = "alloc")]
+pub mod solve;
+#[cfg(feature = "alloc")]
+pub mod spline;
 
 pub use crate::methods::InterpolationType;
 
 pub use crate::methods::{
-    cubic_single_left,
-    cubic_single_middle,
-    cubic_single_right,
-    cubic_single_left_alpha,
-    cubic_single_middle_alpha,
-    cubic_single_right_alpha,
+    cubic_single_left, cubic_single_left_alpha, cubic_single_middle, cubic_single_middle_alpha,
+    cubic_single_right, cubic_single_right_alpha,
 };
 
-pub use crate::methods::akima::{
-    akima_single_left,
-    akima_single_middle,
-    akima_single_right,
-    akima_single_left_alpha,
-    akima_single_middle_alpha,
-    akima_single_right_alpha,
-};
 #[cfg(feature = "alloc")]
 pub use crate::methods::akima::{akima, slopes_akima};
-
-pub use crate::methods::makima::{
-    makima_single_left,
-    makima_single_middle,
-    makima_single_right,
-    makima_single_left_alpha,
-    makima_single_middle_alpha,
-    makima_single_right_alpha,
+pub use crate::methods::akima::{
+    akima_single_left, akima_single_left_alpha, akima_single_middle, akima_single_middle_alpha,
+    akima_single_right, akima_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
 pub use crate::methods::makima::{makima, slopes_makima};
-
-pub use crate::methods::pchip::{
-    pchip_single_left,
-    pchip_single_middle,
-    pchip_single_right,
-    pchip_single_left_alpha,
-    pchip_single_middle_alpha,
-    pchip_single_right_alpha,
+pub use crate::methods::makima::{
+    makima_single_left, makima_single_left_alpha, makima_single_middle, makima_single_middle_alpha,
+    makima_single_right, makima_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
 pub use crate::methods::pchip::{pchip, slopes_pchip};
-
-pub use crate::methods::steffen::{
-    steffen_single_left,
-    steffen_single_middle,
-    steffen_single_right,
-    steffen_single_left_alpha,
-    steffen_single_middle_alpha,
-    steffen_single_right_alpha,
+pub use crate::methods::pchip::{
+    pchip_single_left, pchip_single_left_alpha, pchip_single_middle, pchip_single_middle_alpha,
+    pchip_single_right, pchip_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
-pub use crate::methods::steffen::{steffen, slopes_steffen};
-
-pub use crate::methods::catmullrom::{
-    catmullrom_single_left,
-    catmullrom_single_middle,
-    catmullrom_single_right,
-    catmullrom_single_left_alpha,
-    catmullrom_single_middle_alpha,
-    catmullrom_single_right_alpha,
+pub use crate::methods::steffen::{slopes_steffen, steffen};
+pub use crate::methods::steffen::{
+    steffen_single_left, steffen_single_left_alpha, steffen_single_middle,
+    steffen_single_middle_alpha, steffen_single_right, steffen_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
 pub use crate::methods::catmullrom::{catmullrom, slopes_catmullrom};
-
-pub use crate::methods::cardinal::{
-    cardinal_single_left,
-    cardinal_single_middle,
-    cardinal_single_right,
-    cardinal_single_left_alpha,
-    cardinal_single_middle_alpha,
-    cardinal_single_right_alpha,
+pub use crate::methods::catmullrom::{
+    catmullrom_single_left, catmullrom_single_left_alpha, catmullrom_single_middle,
+    catmullrom_single_middle_alpha, catmullrom_single_right, catmullrom_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
 pub use crate::methods::cardinal::{cardinal, slopes_cardinal};
-
-pub use crate::methods::fritschbutland::{
-    fritschbutland_single_left,
-    fritschbutland_single_middle,
-    fritschbutland_single_right,
-    fritschbutland_single_left_alpha,
-    fritschbutland_single_middle_alpha,
-    fritschbutland_single_right_alpha,
+pub use crate::methods::cardinal::{
+    cardinal_single_left, cardinal_single_left_alpha, cardinal_single_middle,
+    cardinal_single_middle_alpha, cardinal_single_right, cardinal_single_right_alpha,
 };
+
 #[cfg(feature = "alloc")]
 pub use crate::methods::fritschbutland::{fritschbutland, slopes_fritschbutland};
+pub use crate::methods::fritschbutland::{
+    fritschbutland_single_left, fritschbutland_single_left_alpha, fritschbutland_single_middle,
+    fritschbutland_single_middle_alpha, fritschbutland_single_right,
+    fritschbutland_single_right_alpha,
+};
 
-pub use crate::alpha::{cubic_coeffs_to_alpha, cubic_coeffs_to_alpha_unit, alpha_to_cubic_coeffs, alpha_to_standard_cubic_coeffs};
+pub use crate::alpha::{
+    alpha_to_cubic_coeffs, alpha_to_standard_cubic_coeffs, cubic_coeffs_to_alpha,
+    cubic_coeffs_to_alpha_unit,
+};
 pub use crate::binsearch::binary_search_interval;
 
-#[cfg(feature = "alloc")]
-pub use crate::spline::Spline;
 #[cfg(feature = "std")]
-pub use crate::multispline::{MultiSpline, load_multispline_from_csv};
+pub use crate::multispline::{load_multispline_from_csv, MultiSpline};
 #[cfg(feature = "std")]
 pub use crate::searchtree::{SearchNode, SearchTree};
+#[cfg(feature = "alloc")]
+pub use crate::spline::Spline;
 
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/

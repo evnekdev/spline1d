@@ -14,6 +14,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 
 use crate::alpha::cubic_coeffs_to_alpha;
+#[cfg(feature = "alloc")]
 use crate::binsearch::diff;
 #[cfg(feature = "alloc")]
 use crate::spline::Spline;
@@ -83,7 +84,16 @@ pub fn steffen_single_left<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -
 /// Uses one neighbouring point on each side of the target interval. The returned
 /// coefficients `[a, b, c, d]` are evaluated as `((a * dx + b) * dx + c) * dx + d`,
 /// where `dx = x - x1`.
-pub fn steffen_single_middle<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 4] {
+pub fn steffen_single_middle<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 4] {
     let h01 = x1 - x0;
     let h12 = x2 - x1;
     let h23 = x3 - x2;
@@ -128,7 +138,16 @@ pub fn steffen_single_left_alpha<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y3
 /// The returned coefficients are for
 /// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
 /// where `t = (x - x1) / (x2 - x1)`.
-pub fn steffen_single_middle_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+pub fn steffen_single_middle_alpha<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 2] {
     let coeffs = steffen_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);
     return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }

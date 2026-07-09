@@ -18,13 +18,9 @@ use crate::alpha::cubic_coeffs_to_alpha;
 #[cfg(feature = "alloc")]
 use crate::spline::Spline;
 
-use super::cardinal::{
-    cardinal_single_left,
-    cardinal_single_middle,
-    cardinal_single_right,
-};
 #[cfg(feature = "alloc")]
 use super::cardinal::{cardinal, slopes_cardinal};
+use super::cardinal::{cardinal_single_left, cardinal_single_middle, cardinal_single_right};
 
 /// This function accepts x-values and y-values arrays and returns a spline interpolation container.
 #[cfg(feature = "alloc")]
@@ -53,7 +49,16 @@ pub fn catmullrom_single_left<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T, y3: T
 /// Uses one neighbouring point on each side of the target interval. The returned
 /// coefficients `[a, b, c, d]` are evaluated as `((a * dx + b) * dx + c) * dx + d`,
 /// where `dx = x - x1`.
-pub fn catmullrom_single_middle<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 4] {
+pub fn catmullrom_single_middle<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 4] {
     return cardinal_single_middle(x0, y0, x1, y1, x2, y2, x3, y3, T::zero());
 }
 
@@ -80,7 +85,16 @@ pub fn catmullrom_single_left_alpha<T: Float>(x1: T, y1: T, x2: T, y2: T, x3: T,
 /// The returned coefficients are for
 /// `y = y1*(1-t) + y2*t + (1-t)*t*(alpha0 + alpha1*t)`,
 /// where `t = (x - x1) / (x2 - x1)`.
-pub fn catmullrom_single_middle_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T) -> [T; 2] {
+pub fn catmullrom_single_middle_alpha<T: Float>(
+    x0: T,
+    y0: T,
+    x1: T,
+    y1: T,
+    x2: T,
+    y2: T,
+    x3: T,
+    y3: T,
+) -> [T; 2] {
     let coeffs = catmullrom_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);
     return cubic_coeffs_to_alpha(coeffs, x2 - x1);
 }
@@ -97,7 +111,10 @@ pub fn catmullrom_single_right_alpha<T: Float>(x0: T, y0: T, x1: T, y1: T, x2: T
 
 #[cfg(test)]
 mod tests {
-    use super::{catmullrom_single_left, catmullrom_single_middle, catmullrom_single_right, slopes_catmullrom};
+    use super::{
+        catmullrom_single_left, catmullrom_single_middle, catmullrom_single_right,
+        slopes_catmullrom,
+    };
 
     fn assert_close(a: f64, b: f64) {
         assert!((a - b).abs() < 1e-12, "{a} != {b}");
@@ -110,7 +127,8 @@ mod tests {
         let slopes = slopes_catmullrom(&xx, &yy);
 
         let left = catmullrom_single_left(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2]);
-        let middle = catmullrom_single_middle(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
+        let middle =
+            catmullrom_single_middle(xx[0], yy[0], xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
         let right = catmullrom_single_right(xx[1], yy[1], xx[2], yy[2], xx[3], yy[3]);
 
         assert_close(left[2], slopes[0]);
