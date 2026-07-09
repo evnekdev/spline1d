@@ -1,4 +1,5 @@
 //! Finding the cubic root (y = 0 intersection) analytically.
+#[allow(unused_imports)]
 
 use num_traits::Float;
 
@@ -18,7 +19,7 @@ pub fn calculate_root(coeffs: &[f64]) -> f64 {
     let d = coeffs[3];
     let q = (3.0 * a * c - b * b) / (9.0 * a * a);
     let r = (9.0 * a * b * c - 27.0 * a * a * d - 2.0 * b * b * b) / (54.0 * a * a * a);
-    let sqrtvalue = f64::sqrt(q * q * q + r * r);
+    let sqrtvalue = (q * q * q + r * r).sqrt();
     let s = powf_(r + sqrtvalue, 1.0 / 3.0);
     let t = powf_(r - sqrtvalue, 1.0 / 3.0);
     let x1 = s + t - b / (3.0 * a);
