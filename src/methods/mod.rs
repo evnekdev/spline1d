@@ -5,6 +5,8 @@
 //! `akima`, `makima`, `pchip`, `steffen`, `catmullrom`, `cardinal`, and
 //! `fritschbutland`.
 
+use num::{Float};
+
 pub mod akima;
 pub mod makima;
 pub mod pchip;
@@ -83,3 +85,98 @@ pub use self::fritschbutland::{
     fritschbutland_single_middle_alpha,
     fritschbutland_single_right_alpha,
 };
+
+#[derive(Clone,Copy,Debug)]
+pub enum InterpolationType<T: Float> {
+	AKIMA,
+	MAKIMA,
+	PCHIP,
+	STEFFEN,
+	CATMULLROM,
+	CARDINAL(T),
+	FRITSCHBUTLAND,
+}
+
+/*******************************************************************************************************************************************************************/
+/*******************************************************************************************************************************************************************/
+
+/// Generic method to calculate cubic coefficients on a single left interval.
+pub fn cubic_single_left<T: Float>(itype: InterpolationType<T>, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T)->[T;4]{
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_left(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::MAKIMA            => {return makima_single_left(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::PCHIP             => {return pchip_single_left(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::STEFFEN           => {return steffen_single_left(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_left(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_left(x1, y1, x2, y2, x3, y3, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_left(x1, y1, x2, y2, x3, y3);}
+	}
+}
+
+/// Generic method to calculate cubic coefficients on a single middle interval.
+pub fn cubic_single_middle<T: Float>(itype: InterpolationType<T>, x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T)->[T;4] {
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::MAKIMA            => {return makima_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::PCHIP             => {return pchip_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::STEFFEN           => {return steffen_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_middle(x0, y0, x1, y1, x2, y2, x3, y3, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_middle(x0, y0, x1, y1, x2, y2, x3, y3);}
+	}
+}
+
+/// Generic method to calculate cubic coefficients on a single right interval.
+pub fn cubic_single_right<T: Float>(itype: InterpolationType<T>, x0: T, y0: T, x1: T, y1: T, x2: T, y2: T)->[T;4] {
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_right(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::MAKIMA            => {return makima_single_right(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::PCHIP             => {return pchip_single_right(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::STEFFEN           => {return steffen_single_right(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_right(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_right(x0, y0, x1, y1, x2, y2, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_right(x0, y0, x1, y1, x2, y2);}
+	}
+}
+
+/// TODO
+pub fn cubic_single_left_alpha<T: Float>(itype: InterpolationType<T>, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T)->[T;2]{
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::MAKIMA            => {return makima_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::PCHIP             => {return pchip_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::STEFFEN           => {return steffen_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_left_alpha(x1, y1, x2, y2, x3, y3, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_left_alpha(x1, y1, x2, y2, x3, y3);}
+	}
+}
+
+/// TODO
+pub fn cubic_single_middle_alpha<T: Float>(itype: InterpolationType<T>, x0: T, y0: T, x1: T, y1: T, x2: T, y2: T, x3: T, y3: T)->[T;2] {
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::MAKIMA            => {return makima_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::PCHIP             => {return pchip_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::STEFFEN           => {return steffen_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_middle_alpha(x0, y0, x1, y1, x2, y2, x3, y3);}
+	}
+}
+
+/// TODO
+pub fn cubic_single_right_alpha<T: Float>(itype: InterpolationType<T>, x0: T, y0: T, x1: T, y1: T, x2: T, y2: T)->[T;2] {
+	match itype {
+		InterpolationType::AKIMA             => {return akima_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::MAKIMA            => {return makima_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::PCHIP             => {return pchip_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::STEFFEN           => {return steffen_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::CATMULLROM        => {return catmullrom_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+		InterpolationType::CARDINAL(tension) => {return cardinal_single_right_alpha(x0, y0, x1, y1, x2, y2, tension);}
+		InterpolationType::FRITSCHBUTLAND    => {return fritschbutland_single_right_alpha(x0, y0, x1, y1, x2, y2);}
+	}
+}
+
+/*******************************************************************************************************************************************************************/
+/*******************************************************************************************************************************************************************/

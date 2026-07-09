@@ -21,6 +21,17 @@ pub mod multispline;
 pub mod solve;
 pub mod searchtree;
 
+pub use crate::methods::InterpolationType;
+
+pub use crate::methods::{
+    cubic_single_left,
+    cubic_single_middle,
+	cubic_single_right,
+	cubic_single_left_alpha,
+	cubic_single_middle_alpha,
+	cubic_single_right_alpha,
+};
+
 pub use crate::methods::akima::{
     akima,
     slopes_akima,
