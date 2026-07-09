@@ -3,17 +3,9 @@
 //! The main structure in this module, `Spline`, encapsulates the calculated cubic spline coefficients and automatically handles interval location and interpolation using the appropriate set of cubic coefficients.
 
 use core::fmt;
-#[cfg(feature = "std")]
-use std::fs::File;
-#[cfg(feature = "std")]
-use std::path::Path;
-#[cfg(feature = "std")]
-use std::error::Error;
 
 use alloc::vec::Vec;
-use num_traits::{Float, Zero};
-#[cfg(feature = "std")]
-use csv::Reader;
+use num_traits::{Float};
 
 use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
 use crate::solve::{calculate_root};
@@ -196,15 +188,17 @@ impl Spline<f64>{
 		let mut x1 = self.breaks_x[index1];
 		let mut x2 = other.breaks_x[index2];
 		let func = |x| self.interpolate(&x).unwrap()-other.interpolate(&x).unwrap();
-		let mut y1 = func(x1);
-		let mut y2 = func(x2);
+		let y1 = func(x1);
+		let _y2 = func(x2);
 		while (x1-x2).abs() > 1.0e-6 {
 			let x = (x1+x2)/2.0;
 			let y = func(x);
 			if ((y > 0.0) && (y1 > 0.0)) || ((y < 0.0) && (y1 < 0.0)){
 				x1 = x;
+				//y1 = y;
 			} else {
 				x2 = x;
+				//y2 = y;
 			}
 		}
 		let x = (x1+x2)/2.0;

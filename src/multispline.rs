@@ -9,14 +9,11 @@ use std::fs::{File};
 use std::path::{Path};
 use std::error::{Error};
 
-use core::ops::{Add};
-use num_traits::{Float, Zero};
+use num_traits::{Float};
 use csv::{Reader};
 
-use crate::binsearch::{binary_search_interval,interval_inside,kernel_conv};
 use crate::methods::makima::makima;
 use crate::spline::Spline;
-use crate::solve::{calculate_root};
 
 /*****************************************************************************************************************************************************************************/
 /*****************************************************************************************************************************************************************************/
@@ -146,7 +143,7 @@ where K : Eq + Hash, T : Float + core::fmt::Debug,
 		return self.tt.len();
 	}
 	
-	pub fn index(&self, key: K, x: &T)->Option<usize>{
+	pub fn index(&self, _key: K, _x: &T)->Option<usize>{
 		todo!();
 	}
 	

@@ -18,7 +18,7 @@ pub fn binary_search_interval<T: Float>(size: usize, sval: &T, locator: impl Fn(
 	let mut n0 = 0;
 	let mut n1 = size-1;
 	let mut v0 = locator(n0);
-	let mut v1 = locator(n1);
+	let v1 = locator(n1);
 	if _check_float(&v0) || _check_float(&v1){return None;}
 	if !interval_inside(sval, (&v0, &v1)){return None;}
 	while (n1-n0) > 1 {
@@ -27,7 +27,7 @@ pub fn binary_search_interval<T: Float>(size: usize, sval: &T, locator: impl Fn(
 		if _check_float(&v){return None;}
 		if interval_inside(sval, (&v0,&v)){
 			n1 = n;
-			v1 = v;
+			//v1 = v;
 		} else {
 			n0 = n;
 			v0 = v;

@@ -5,7 +5,7 @@
 //! TODO - finish docs.
 
 use std::fmt::Debug;
-use std::collections::{HashMap, BTreeSet};
+use std::collections::{BTreeSet};
 use std::hash::Hash;
 use std::borrow::Borrow;
 
@@ -49,7 +49,7 @@ impl<T: Float + Debug> SearchNode<T>{
 	
 	pub fn null<K: Eq + Hash>(pps: &MultiSpline<K,T>) -> Self {
 		let mut minmaxs : Vec<[T;2]> = Vec::new();
-		for k in 0..pps.number_variables(){
+		for _ in 0..pps.number_variables(){
 			minmaxs.push([T::zero();2]);
 		}
 		return Self {
@@ -136,8 +136,8 @@ where T: Float + Debug, K : Eq + Hash,
 				None => return None,
 			}
 		}
-		let mut left  = self.nodes[nindex].clone();
-		let mut right = self.nodes[nindex].clone();
+		let left  = self.nodes[nindex].clone();
+		let right = self.nodes[nindex].clone();
 		let idx_left = self.nodes.len();
 		let idx_right = self.nodes.len()+1;
 		self.nodes.push(left);
@@ -179,7 +179,7 @@ where T: Float + Debug, K : Eq + Hash,
 	}
 	
 	/// TODO
-	pub fn interval_indices<Q: ?Sized>(&self, key: &Q, x: &T)->Vec<T>
+	pub fn interval_indices<Q: ?Sized>(&self, key: &Q, _x: &T)->Vec<T>
 	where K: Borrow<Q>, Q : Hash + Eq,
 	{
 		match self.pps.keys.get(key){
@@ -187,7 +187,7 @@ where T: Float + Debug, K : Eq + Hash,
 			Some(None) => {
 				todo!();
 			}
-			Some(Some(idx)) => {
+			Some(Some(_idx)) => {
 				todo!();
 			}
 		}
@@ -238,7 +238,7 @@ where T: Float + Debug, K : Eq + Hash,
 						return vec![];
 					}
 				}
-				return self.pps.pps[*idx].0.interpolate(x).into_iter().collect();
+				// return self.pps.pps[*idx].0.interpolate(x).into_iter().collect();
 			}
 			(Some(Some(idx)), Some(None)) => {
 				let indices = self.interval_indices_by_idx(*idx, x);
